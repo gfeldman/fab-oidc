@@ -1,9 +1,9 @@
 import os
-from flask import redirect, request
+from flask import redirect, request, current_app
 from flask_appbuilder.security.views import AuthOIDView
 from flask_login import login_user
 from flask_admin import expose
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 
 # Set the OIDC field that should be used as a username
@@ -12,6 +12,8 @@ FIRST_NAME_OIDC_FIELD = os.getenv('FIRST_NAME_OIDC_FIELD',
                                   default='nickname')
 LAST_NAME_OIDC_FIELD = os.getenv('LAST_NAME_OIDC_FIELD',
                                  default='name')
+
+OVERWRITE_REDIRECT_URI = 
 
 def get_airflow_roles(k_roles):
   if 'admin' in k_roles:
@@ -31,25 +33,9 @@ class AuthOIDCView(AuthOIDView):
 
         @self.appbuilder.sm.oid.require_login
         def handle_login():
-            user = sm.auth_user_oid(oidc.user_getfield('email'))
-
-           
+            user = sm.auth_user_oid(oidc.user_getfield('email'))           
             if user is None:
-              
-                print("user: ")
-                print(USERNAME_OIDC_FIELD)
-                print("first: ")
-                print(FIRST_NAME_OIDC_FIELD)
-                print("last: ")
-                print(LAST_NAME_OIDC_FIELD)
-                
                 tinfo =oidc.user_getinfo([USERNAME_OIDC_FIELD, 'email', LAST_NAME_OIDC_FIELD, FIRST_NAME_OIDC_FIELD, 'nickname', 'roles'])
-                print(tinfo)
-                
-                info = oidc.user_getinfo(
-                    [USERNAME_OIDC_FIELD, 'name', 'email', 'nickname']
-                )
-
                 user = sm.add_user(
                     username=tinfo.get(USERNAME_OIDC_FIELD),
                     first_name=tinfo.get(FIRST_NAME_OIDC_FIELD),
@@ -70,8 +56,13 @@ class AuthOIDCView(AuthOIDView):
 
         oidc.logout()
         super(AuthOIDCView, self).logout()
-        redirect_url = request.url_root.strip(
-            '/') + self.appbuilder.get_url_for_login
+        
+        redirect_uri = current_app.config['OVERWRITE_REDIRECT_URI']
+        if redirect_uri:
+            parsed_uri = urlparse(redirect_uri)
+            redirect_url = parsed_uri.scheme + "://" + parsed_uri.hostname + self.appbuilder.get_url_for_login
+        else:
+            redirect_url = request.url_root.strip('/') + self.appbuilder.get_url_for_login
 
         logout_uri = oidc.client_secrets.get(
             'issuer') + '/protocol/openid-connect/logout?redirect_uri='
