@@ -13,8 +13,6 @@ FIRST_NAME_OIDC_FIELD = os.getenv('FIRST_NAME_OIDC_FIELD',
 LAST_NAME_OIDC_FIELD = os.getenv('LAST_NAME_OIDC_FIELD',
                                  default='name')
 
-OVERWRITE_REDIRECT_URI = 
-
 def get_airflow_roles(k_roles):
   if 'admin' in k_roles:
     return 'Admin'
