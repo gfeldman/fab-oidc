@@ -36,7 +36,7 @@ class AuthOIDCView(AuthOIDView):
                 print("last: ")
                 print(LAST_NAME_OIDC_FIELD)
                 
-                tinfo =oidc.user_getinfo([USERNAME_OIDC_FIELD, 'email', LAST_NAME_OIDC_FIELD])
+                tinfo =oidc.user_getinfo([USERNAME_OIDC_FIELD, 'email', LAST_NAME_OIDC_FIELD, FIRST_NAME_OIDC_FIELD, 'nickname'])
                 print(tinfo)
                 
                 info = oidc.user_getinfo(
@@ -44,10 +44,10 @@ class AuthOIDCView(AuthOIDView):
                 )
 
                 user = sm.add_user(
-                    username=info.get(USERNAME_OIDC_FIELD),
-                    first_name=info.get(FIRST_NAME_OIDC_FIELD),
-                    last_name=info.get(LAST_NAME_OIDC_FIELD),
-                    email=info.get('email'),
+                    username=tinfo.get(USERNAME_OIDC_FIELD),
+                    first_name=tinfo.get(FIRST_NAME_OIDC_FIELD),
+                    last_name=tinfo.get(LAST_NAME_OIDC_FIELD),
+                    email=tinfo.get('email'),
                     role=sm.find_role(sm.auth_user_registration_role)
                 )
 
