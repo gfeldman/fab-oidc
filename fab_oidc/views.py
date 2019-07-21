@@ -26,7 +26,19 @@ class AuthOIDCView(AuthOIDView):
         def handle_login():
             user = sm.auth_user_oid(oidc.user_getfield('email'))
 
+           
             if user is None:
+              
+                print("user: ")
+                print(USERNAME_OIDC_FIELD)
+                print("first: ")
+                print(FIRST_NAME_OIDC_FIELD)
+                print("last: ")
+                print(LAST_NAME_OIDC_FIELD)
+                
+                tinfo =oidc.user_getinfo([USERNAME_OIDC_FIELD, 'email', LAST_NAME_OIDC_FIELD])
+                print(tinfo)
+                
                 info = oidc.user_getinfo(
                     [USERNAME_OIDC_FIELD, 'name', 'email', 'nickname']
                 )
