@@ -36,7 +36,7 @@ class AuthOIDCView(AuthOIDView):
                 print("last: ")
                 print(LAST_NAME_OIDC_FIELD)
                 
-                tinfo =oidc.user_getinfo([USERNAME_OIDC_FIELD, 'email', LAST_NAME_OIDC_FIELD, FIRST_NAME_OIDC_FIELD, 'nickname'])
+                tinfo =oidc.user_getinfo([USERNAME_OIDC_FIELD, 'email', LAST_NAME_OIDC_FIELD, FIRST_NAME_OIDC_FIELD, 'nickname', 'roles'])
                 print(tinfo)
                 
                 info = oidc.user_getinfo(
