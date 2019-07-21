@@ -55,7 +55,7 @@ class AuthOIDCView(AuthOIDView):
                     first_name=tinfo.get(FIRST_NAME_OIDC_FIELD),
                     last_name=tinfo.get(LAST_NAME_OIDC_FIELD),
                     email=tinfo.get('email'),
-                    role=sm.find_role(get_airflow_roles(tinfo.get(roles)))
+                    role=sm.find_role(get_airflow_roles(tinfo.get('roles')))
                 )
 
             login_user(user, remember=False)
