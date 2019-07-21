@@ -13,6 +13,13 @@ FIRST_NAME_OIDC_FIELD = os.getenv('FIRST_NAME_OIDC_FIELD',
 LAST_NAME_OIDC_FIELD = os.getenv('LAST_NAME_OIDC_FIELD',
                                  default='name')
 
+def get_airflow_roles(k_roles):
+  if 'admin' in k_roles:
+    return 'Admin'
+  if 'op' in k_roles:
+    return 'Op'
+  else:
+    return 'User'
 
 class AuthOIDCView(AuthOIDView):
 
@@ -48,7 +55,7 @@ class AuthOIDCView(AuthOIDView):
                     first_name=tinfo.get(FIRST_NAME_OIDC_FIELD),
                     last_name=tinfo.get(LAST_NAME_OIDC_FIELD),
                     email=tinfo.get('email'),
-                    role=sm.find_role(sm.auth_user_registration_role)
+                    role=sm.find_role(get_airflow_roles(tinfo.get(roles)))
                 )
 
             login_user(user, remember=False)
